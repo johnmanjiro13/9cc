@@ -1,6 +1,6 @@
 # 9cc
 
-Small C compiler designed in https://www.sigbus.info/compilerbook .
+Small C compiler designed in https://www.sigbus.info/compilerbook.
 
 # Run on MacOS
 
