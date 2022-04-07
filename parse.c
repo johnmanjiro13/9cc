@@ -1,6 +1,35 @@
 #include "9cc.h"
 
+// Local variables
 LVar *locals;
+
+// Codes
+Node *code[100];
+
+static LVar *new_lvar(Token *tok)
+{
+  LVar *lvar = calloc(1, sizeof(LVar));
+  lvar->next = locals;
+  lvar->name = tok->str;
+  lvar->len = tok->len;
+  if (locals == NULL)
+  {
+    lvar->offset = 8;
+  }
+  else
+  {
+    lvar->offset = locals->offset + 8;
+  }
+  return lvar;
+}
+
+static LVar *find_lvar(Token *tok)
+{
+  for (LVar *var = locals; var; var = var->next)
+    if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+      return var;
+  return NULL;
+}
 
 static Node *new_node(NodeKind kind)
 {
@@ -17,20 +46,31 @@ static Node *new_binary(NodeKind kind, Node *lhs, Node *rhs)
   return node;
 }
 
+static Node *new_ident(Token *tok)
+{
+  Node *node = calloc(1, sizeof(Node));
+  node->kind = ND_LVAR;
+
+  LVar *lvar = find_lvar(tok);
+  if (lvar)
+  {
+    node->offset = lvar->offset;
+  }
+  else
+  {
+    lvar = new_lvar(tok);
+    node->offset = lvar->offset;
+    locals = lvar;
+  }
+  return node;
+}
+
 static Node *new_num(int val)
 {
   Node *node = calloc(1, sizeof(Node));
   node->kind = ND_NUM;
   node->val = val;
   return node;
-}
-
-static LVar *find_lvar(Token *tok)
-{
-  for (LVar *var = locals; var; var = var->next)
-    if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
-      return var;
-  return NULL;
 }
 
 void *program();
@@ -43,8 +83,6 @@ static Node *add();
 static Node *mul();
 static Node *unary();
 static Node *primary();
-
-Node *code[100];
 
 // program = stmt*
 void *program()
@@ -166,32 +204,7 @@ static Node *primary()
   Token *tok = consume_ident();
   if (tok)
   {
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_LVAR;
-
-    LVar *lvar = find_lvar(tok);
-    if (lvar)
-    {
-      node->offset = lvar->offset;
-    }
-    else
-    {
-      lvar = calloc(1, sizeof(LVar));
-      lvar->next = locals;
-      lvar->name = tok->str;
-      lvar->len = tok->len;
-      if (locals == NULL)
-      {
-        lvar->offset = 8;
-      }
-      else
-      {
-        lvar->offset = locals->offset + 8;
-      }
-      node->offset = lvar->offset;
-      locals = lvar;
-    }
-    return node;
+    return new_ident(tok);
   }
 
   return new_num(expect_number());
