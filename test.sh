@@ -50,5 +50,7 @@ assert 0 '1>=2;'
 
 assert 5 'x=5;x;'
 assert 6 'a=2; b=3; a*b;'
+assert 7 'a=3; b=3+1; a+b;'
+assert 6 'foo=2; bar=3+1; foo + bar;'
 
 echo OK

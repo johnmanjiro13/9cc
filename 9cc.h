@@ -1,3 +1,4 @@
+#define __STDC_WANT_LIB_EXT2__ 1
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -67,6 +68,16 @@ struct Node
   Node *rhs;     // Right-hand side
   int val;       // Used if kind == ND_NUM
   int offset;    // Used if kind == ND_LVAR
+};
+
+// Local variable type
+typedef struct LVar LVar;
+struct LVar
+{
+  LVar *next; // Next variable or NULL
+  char *name; // Variable name
+  int len;    // Name length
+  int offset; // Offset from RBP
 };
 
 void *program();
