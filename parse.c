@@ -110,11 +110,11 @@ static Node *stmt_inner()
   {
     Node *node = new_node(ND_IF);
     expect("(");
-    node->lhs = expr();
+    node->cond = expr();
     expect(")");
-    node->rhs = stmt();
+    node->then = stmt();
     if (consume("else"))
-      node->alt = stmt();
+      node->els = stmt();
     return node;
   }
 

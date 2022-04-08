@@ -39,22 +39,22 @@ void gen(Node *node)
   {
     int seq = label_seq;
     label_seq++;
-    gen(node->lhs);
+    gen(node->cond);
     printf("  pop rax\n");
     printf("  cmp rax, 0\n");
-    if (node->alt)
+    if (node->els)
     {
       printf("  je .Lelse%d\n", seq);
-      gen(node->rhs);
+      gen(node->then);
       printf("  jmp .Lend%d\n", seq);
       printf(".Lelse%d:\n", seq);
-      gen(node->alt);
+      gen(node->els);
       printf(".Lend%d:\n", seq);
     }
     else
     {
       printf("  je .Lend%d\n", seq);
-      gen(node->rhs);
+      gen(node->then);
       printf(".Lend%d:\n", seq);
     }
     return;

@@ -70,9 +70,13 @@ struct Node
   NodeKind kind; // Node kind
   Node *lhs;     // Left-hand side
   Node *rhs;     // Right-hand side
-  Node *alt;     // Alt
   int val;       // Used if kind == ND_NUM
   int offset;    // Used if kind == ND_LVAR
+
+  // "if"
+  Node *cond;
+  Node *then;
+  Node *els;
 };
 
 // Local variable type
