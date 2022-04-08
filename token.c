@@ -32,20 +32,13 @@ void error_at(char *loc, char *fmt, ...)
 }
 
 // Consumes the current token if it matches `op`.
-bool consume(char *op)
+Token *consume(char *op)
 {
   if (token->kind != TK_RESERVED ||
       strlen(op) != token->len ||
       memcmp(token->str, op, token->len))
-    return false;
-  token = token->next;
-  return true;
-}
-
-Token *consume_return()
-{
-  if (token->kind != TK_RETURN)
     return NULL;
+
   Token *tok = token;
   token = token->next;
   return tok;
@@ -111,6 +104,12 @@ static bool is_alnum(char c)
   return is_alpha(c) || ('0' <= c && c <= '9');
 }
 
+static bool is_str(char *p, char *expect)
+{
+  int len = strlen(expect);
+  return strncmp(p, expect, len) == 0 && !is_alnum(p[len]);
+}
+
 static bool is_return(char *p)
 {
   return strncmp(p, "return", 6) == 0 && !is_alnum(p[6]);
@@ -149,10 +148,10 @@ Token *tokenize()
       continue;
     }
 
-    // Return
-    if (is_return(p))
+    // "return"
+    if (is_str(p, "return"))
     {
-      cur = new_token(TK_RETURN, cur, p, 6);
+      cur = new_token(TK_RESERVED, cur, p, 6);
       p += 6;
       continue;
     }

@@ -93,12 +93,13 @@ void *program()
   code[i] = NULL;
 }
 
-// stmt = expr ";" | "return" expr ";"
+// stmt = expr ";"
+//       | "return" expr ";"
 static Node *stmt()
 {
   Node *node;
 
-  Token *tok = consume_return();
+  Token *tok = consume("return");
   if (tok)
   {
     node = calloc(1, sizeof(Node));
