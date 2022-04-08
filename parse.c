@@ -95,6 +95,7 @@ void *program()
 }
 
 // stmt = expr ";"
+//       | "{" stmt* "}"
 //       | "if" "(" expr ")" stmt ("else" stmt)?
 //       | "while" "(" expr ")" stmt
 //       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
@@ -152,6 +153,16 @@ static Node *stmt_inner()
       expect(")");
     }
     node->then = stmt();
+    return node;
+  }
+
+  // Parse block(compound) statement like "{}"
+  if (consume("{"))
+  {
+    Node *node = new_node(ND_BLOCK);
+    node->stmts = new_vec();
+    while (!consume("}"))
+      vec_push(node->stmts, stmt());
     return node;
   }
 

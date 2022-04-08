@@ -7,6 +7,21 @@
 #include <string.h>
 
 //
+// util.c
+//
+
+typedef struct Vector Vector;
+struct Vector
+{
+  void **data;
+  int capacity;
+  int len;
+};
+
+Vector *new_vec();
+void vec_push(Vector *v, void *elem);
+
+//
 // token.c
 //
 
@@ -62,6 +77,7 @@ typedef enum
   ND_ELSE,   // "else"
   ND_WHILE,  // "while"
   ND_FOR,    // "for"
+  ND_BLOCK,  // block like {}
   ND_NUM,    // Integer
 } NodeKind;
 
@@ -83,6 +99,9 @@ struct Node
   // "for"
   Node *init;
   Node *updt;
+
+  // Block(compound) statement
+  Vector *stmts;
 };
 
 // Local variable type
