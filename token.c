@@ -17,7 +17,7 @@ void error(char *fmt, ...)
 }
 
 // Reports an error location and exit.
-static void error_at(char *loc, char *fmt, ...)
+void error_at(char *loc, char *fmt, ...)
 {
   va_list ap;
   va_start(ap, fmt);
@@ -42,6 +42,15 @@ bool consume(char *op)
   return true;
 }
 
+Token *consume_return()
+{
+  if (token->kind != TK_RETURN)
+    return NULL;
+  Token *tok = token;
+  token = token->next;
+  return tok;
+}
+
 Token *consume_ident()
 {
   if (token->kind != TK_IDENT)
@@ -57,7 +66,7 @@ void expect(char *op)
   if (token->kind != TK_RESERVED ||
       strlen(op) != token->len ||
       memcmp(token->str, op, token->len))
-    error_at(token->str, "expected '%c'", op);
+    error_at(token->str, "expected '%c'", *op);
   token = token->next;
 }
 
@@ -102,6 +111,11 @@ static bool is_alnum(char c)
   return is_alpha(c) || ('0' <= c && c <= '9');
 }
 
+static bool is_return(char *p)
+{
+  return strncmp(p, "return", 6) == 0 && !is_alnum(p[6]);
+}
+
 // Tokenize `p` and returns new tokens.
 Token *tokenize()
 {
@@ -132,6 +146,14 @@ Token *tokenize()
     if (strchr("+-*/()<>=;", *p))
     {
       cur = new_token(TK_RESERVED, cur, p++, 1);
+      continue;
+    }
+
+    // Return
+    if (is_return(p))
+    {
+      cur = new_token(TK_RETURN, cur, p, 6);
+      p += 6;
       continue;
     }
 

@@ -93,10 +93,23 @@ void *program()
   code[i] = NULL;
 }
 
-// stmt = expr ;
+// stmt = expr ";" | "return" expr ";"
 static Node *stmt()
 {
-  Node *node = expr();
+  Node *node;
+
+  Token *tok = consume_return();
+  if (tok)
+  {
+    node = calloc(1, sizeof(Node));
+    node->kind = ND_RETURN;
+    node->lhs = expr();
+  }
+  else
+  {
+    node = expr();
+  }
+
   expect(";");
   return node;
 }
