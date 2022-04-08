@@ -59,6 +59,7 @@ typedef enum
   ND_LVAR,   // Local variable
   ND_RETURN, // "return"
   ND_IF,     // "if"
+  ND_ELSE,   // "else"
   ND_NUM,    // Integer
 } NodeKind;
 
@@ -69,6 +70,7 @@ struct Node
   NodeKind kind; // Node kind
   Node *lhs;     // Left-hand side
   Node *rhs;     // Right-hand side
+  Node *alt;     // Alt
   int val;       // Used if kind == ND_NUM
   int offset;    // Used if kind == ND_LVAR
 };

@@ -95,7 +95,7 @@ void *program()
 }
 
 // stmt = expr ";"
-//       | "if" "(" expr ")" stmt
+//       | "if" "(" expr ")" stmt ("else" stmt)?
 //       | "return" expr ";"
 static Node *stmt()
 {
@@ -105,7 +105,7 @@ static Node *stmt()
 
 static Node *stmt_inner()
 {
-  // Parse "if" statement
+  // Parse "if-else" statement
   if (consume("if"))
   {
     Node *node = new_node(ND_IF);
@@ -113,6 +113,8 @@ static Node *stmt_inner()
     node->lhs = expr();
     expect(")");
     node->rhs = stmt();
+    if (consume("else"))
+      node->alt = stmt();
     return node;
   }
 
