@@ -79,6 +79,7 @@ typedef enum
   ND_FOR,    // "for"
   ND_BLOCK,  // block like {}
   ND_NUM,    // Integer
+  ND_CALL,   // Function call
 } NodeKind;
 
 // AST node type
@@ -102,6 +103,8 @@ struct Node
 
   // Block(compound) statement
   Vector *stmts;
+
+  char *func_name;
 };
 
 // Local variable type

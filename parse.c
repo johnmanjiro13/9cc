@@ -271,7 +271,7 @@ static Node *unary()
   return primary();
 }
 
-// primary = "(" expr ")" | num | ident
+// primary = "(" expr ")" | num | ident ("(" ")")?
 static Node *primary()
 {
   if (consume("("))
@@ -284,7 +284,17 @@ static Node *primary()
   Token *tok = consume_ident();
   if (tok)
   {
-    return new_ident(tok);
+    if (consume("("))
+    {
+      expect(")");
+      Node *node = new_node(ND_CALL);
+      node->func_name = tok->str;
+      return node;
+    }
+    else
+    {
+      return new_ident(tok);
+    }
   }
 
   return new_num(expect_number());
