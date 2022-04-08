@@ -75,6 +75,7 @@ static Node *new_num(int val)
 
 void *program();
 static Node *stmt();
+static Node *stmt_inner();
 static Node *expr();
 static Node *assign();
 static Node *equality();
@@ -94,23 +95,38 @@ void *program()
 }
 
 // stmt = expr ";"
+//       | "if" "(" expr ")" stmt
 //       | "return" expr ";"
 static Node *stmt()
 {
-  Node *node;
+  Node *node = stmt_inner();
+  return node;
+}
 
-  Token *tok = consume("return");
-  if (tok)
+static Node *stmt_inner()
+{
+  // Parse "if" statement
+  if (consume("if"))
   {
-    node = calloc(1, sizeof(Node));
-    node->kind = ND_RETURN;
+    Node *node = new_node(ND_IF);
+    expect("(");
     node->lhs = expr();
-  }
-  else
-  {
-    node = expr();
+    expect(")");
+    node->rhs = stmt();
+    return node;
   }
 
+  // Parse "return" statement
+  if (consume("return"))
+  {
+    Node *node = new_node(ND_RETURN);
+    node->lhs = expr();
+    expect(";");
+    return node;
+  }
+
+  // Parse expression statement
+  Node *node = expr();
   expect(";");
   return node;
 }

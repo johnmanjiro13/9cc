@@ -1,5 +1,8 @@
 #include "9cc.h"
 
+// Global sequence number which is used for jump labels
+int label_seq = 1;
+
 static void gen_lval(Node *node)
 {
   if (node->kind != ND_LVAR)
@@ -32,6 +35,18 @@ void gen(Node *node)
     printf("  mov [rax], rdi\n");
     printf("  push rdi\n");
     return;
+  case ND_IF:
+  {
+    int seq = label_seq;
+    label_seq++;
+    gen(node->lhs);
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    printf("  je .Lend%d\n", seq);
+    gen(node->rhs);
+    printf(".Lend%d:\n", seq);
+    return;
+  }
   case ND_RETURN:
     gen(node->lhs);
     printf("  pop rax\n");

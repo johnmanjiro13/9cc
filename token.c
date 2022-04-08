@@ -110,9 +110,18 @@ static bool is_str(char *p, char *expect)
   return strncmp(p, expect, len) == 0 && !is_alnum(p[len]);
 }
 
-static bool is_return(char *p)
+static char *read_reserved(char *p)
 {
-  return strncmp(p, "return", 6) == 0 && !is_alnum(p[6]);
+  // keywords
+  char *kw[] = {"return", "if"};
+
+  for (int i = 0; i < sizeof(kw) / sizeof(*kw); i++)
+  {
+    int len = strlen(kw[i]);
+    if (startswith(p, kw[i]) && !is_alnum(p[len]))
+      return kw[i];
+  }
+  return NULL;
 }
 
 // Tokenize `p` and returns new tokens.
@@ -148,11 +157,13 @@ Token *tokenize()
       continue;
     }
 
-    // "return"
-    if (is_str(p, "return"))
+    // Reserved keywords
+    char *keyword = read_reserved(p);
+    if (keyword)
     {
-      cur = new_token(TK_RESERVED, cur, p, 6);
-      p += 6;
+      int len = strlen(keyword);
+      cur = new_token(TK_RESERVED, cur, keyword, len);
+      p += len;
       continue;
     }
 
