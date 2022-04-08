@@ -113,7 +113,7 @@ static bool is_str(char *p, char *expect)
 static char *read_reserved(char *p)
 {
   // keywords
-  char *kw[] = {"return", "if", "else"};
+  char *kw[] = {"return", "if", "else", "while"};
 
   for (int i = 0; i < sizeof(kw) / sizeof(*kw); i++)
   {

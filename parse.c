@@ -96,6 +96,7 @@ void *program()
 
 // stmt = expr ";"
 //       | "if" "(" expr ")" stmt ("else" stmt)?
+//       | "while" "(" expr ")" stmt
 //       | "return" expr ";"
 static Node *stmt()
 {
@@ -115,6 +116,17 @@ static Node *stmt_inner()
     node->then = stmt();
     if (consume("else"))
       node->els = stmt();
+    return node;
+  }
+
+  // Parse "while" statement
+  if (consume("while"))
+  {
+    Node *node = new_node(ND_WHILE);
+    expect("(");
+    node->cond = expr();
+    expect(")");
+    node->then = stmt();
     return node;
   }
 

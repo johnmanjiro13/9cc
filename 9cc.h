@@ -60,6 +60,7 @@ typedef enum
   ND_RETURN, // "return"
   ND_IF,     // "if"
   ND_ELSE,   // "else"
+  ND_WHILE,  // "while"
   ND_NUM,    // Integer
 } NodeKind;
 
@@ -73,7 +74,7 @@ struct Node
   int val;       // Used if kind == ND_NUM
   int offset;    // Used if kind == ND_LVAR
 
-  // "if"
+  // "if", "while"
   Node *cond;
   Node *then;
   Node *els;
