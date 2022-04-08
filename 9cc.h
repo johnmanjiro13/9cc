@@ -105,6 +105,7 @@ struct Node
   Vector *stmts;
 
   char *func_name;
+  Vector *args;
 };
 
 // Local variable type

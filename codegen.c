@@ -97,9 +97,19 @@ void gen(Node *node)
     }
     return;
   case ND_CALL:
+  {
+    for (int i = 0; i < node->args->len; i++)
+      gen(node->args->data[i]);
+
+    // Set arguments in reverse order
+    char *arg[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+    for (int i = node->args->len - 1; i >= 0; i--)
+      printf("  pop %s\n", arg[i]);
+
     printf("  call %s\n", node->func_name);
     printf("  push rax\n");
     return;
+  }
   case ND_RETURN:
     gen(node->lhs);
     printf("  pop rax\n");

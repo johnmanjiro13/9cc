@@ -271,7 +271,7 @@ static Node *unary()
   return primary();
 }
 
-// primary = "(" expr ")" | num | ident ("(" ")")?
+// primary = "(" expr ")" | num | ident ("(" (assign ("," assign)*)? ")")?
 static Node *primary()
 {
   if (consume("("))
@@ -284,17 +284,20 @@ static Node *primary()
   Token *tok = consume_ident();
   if (tok)
   {
-    if (consume("("))
-    {
-      expect(")");
-      Node *node = new_node(ND_CALL);
-      node->func_name = tok->str;
-      return node;
-    }
-    else
-    {
+    if (!consume("("))
       return new_ident(tok);
-    }
+
+    Node *node = new_node(ND_CALL);
+    node->args = new_vec();
+    if (consume(")"))
+      return node;
+
+    vec_push(node->args, assign());
+    while (consume(","))
+      vec_push(node->args, assign());
+    expect(")");
+    node->func_name = tok->str;
+    return node;
   }
 
   return new_num(expect_number());

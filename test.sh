@@ -12,12 +12,12 @@ assert() {
   if [ "$actual" = "$expected" ]; then
     echo "$input => $actual"
   else
-    echo "$input => $expected expected, but go $actual"
+    echo "$input => $expected expected, but got $actual"
     exit 1
   fi
 }
 
-echo 'int plus() { return 10; }' | gcc -xc -c -o tmp-plus.o -
+echo 'int plus(int x, int y) { return x + y; }' | gcc -xc -c -o tmp-plus.o -
 
 assert 0 "return 0;"
 assert 42 "return 42;"
@@ -66,6 +66,6 @@ assert 10 "for(i=0; i<=10; i=i+1) if (i == 10) return i;"
 assert 3 '{1; {2;} return 3;}'
 assert 55 'i=0; j=0; while(i<=10) {j=i+j; i=i+1;} return j;'
 
-assert 10 'return plus();'
+assert 5 'return plus(2, 3);'
 
 echo OK
