@@ -61,6 +61,7 @@ typedef enum
   ND_IF,     // "if"
   ND_ELSE,   // "else"
   ND_WHILE,  // "while"
+  ND_FOR,    // "for"
   ND_NUM,    // Integer
 } NodeKind;
 
@@ -78,6 +79,10 @@ struct Node
   Node *cond;
   Node *then;
   Node *els;
+
+  // "for"
+  Node *init;
+  Node *updt;
 };
 
 // Local variable type

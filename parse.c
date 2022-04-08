@@ -97,6 +97,7 @@ void *program()
 // stmt = expr ";"
 //       | "if" "(" expr ")" stmt ("else" stmt)?
 //       | "while" "(" expr ")" stmt
+//       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
 //       | "return" expr ";"
 static Node *stmt()
 {
@@ -126,6 +127,30 @@ static Node *stmt_inner()
     expect("(");
     node->cond = expr();
     expect(")");
+    node->then = stmt();
+    return node;
+  }
+
+  // Parse "for" statement
+  if (consume("for"))
+  {
+    Node *node = new_node(ND_FOR);
+    expect("(");
+    if (!consume(";"))
+    {
+      node->init = expr();
+      expect(";");
+    }
+    if (!consume(";"))
+    {
+      node->cond = expr();
+      expect(";");
+    }
+    if (!consume(")"))
+    {
+      node->updt = expr();
+      expect(")");
+    }
     node->then = stmt();
     return node;
   }
