@@ -62,24 +62,26 @@ extern Token *token;
 
 typedef enum
 {
-  ND_ADD,    // +
-  ND_SUB,    // -
-  ND_MUL,    // *
-  ND_DIV,    // /
-  ND_EQ,     // ==
-  ND_NE,     // !=
-  ND_LT,     // <
-  ND_LE,     // <=
-  ND_ASSIGN, // =
-  ND_LVAR,   // Local variable
-  ND_RETURN, // "return"
-  ND_IF,     // "if"
-  ND_ELSE,   // "else"
-  ND_WHILE,  // "while"
-  ND_FOR,    // "for"
-  ND_BLOCK,  // block like {}
-  ND_NUM,    // Integer
-  ND_CALL,   // Function call
+  ND_ADD,          // +
+  ND_SUB,          // -
+  ND_MUL,          // *
+  ND_DIV,          // /
+  ND_EQ,           // ==
+  ND_NE,           // !=
+  ND_LT,           // <
+  ND_LE,           // <=
+  ND_ASSIGN,       // =
+  ND_LVAR,         // Local variable
+  ND_RETURN,       // "return"
+  ND_IF,           // "if"
+  ND_ELSE,         // "else"
+  ND_WHILE,        // "while"
+  ND_FOR,          // "for"
+  ND_BLOCK,        // block like {}
+  ND_NUM,          // Integer
+  ND_CALL,         // Function call
+  ND_FUNC_DEF,     // Function definition
+  ND_FUNC_DEF_END, // End of function definition
 } NodeKind;
 
 // AST node type

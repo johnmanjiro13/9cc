@@ -110,6 +110,26 @@ void gen(Node *node)
     printf("  push rax\n");
     return;
   }
+  case ND_FUNC_DEF:
+  {
+    printf("%s:\n", node->func_name);
+
+    // Prologue
+    printf("  push rbp\n");
+    printf("  mov rbp, rsp\n");
+    printf("  sub rsp, 208\n");
+    return;
+  }
+  case ND_FUNC_DEF_END:
+  {
+    printf("  pop rax\n");
+
+    // Epilogue
+    printf("  mov rsp, rbp\n");
+    printf("  pop rbp\n");
+    printf("  ret\n");
+    return;
+  }
   case ND_RETURN:
     gen(node->lhs);
     printf("  pop rax\n");

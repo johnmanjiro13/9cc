@@ -13,13 +13,6 @@ int main(int argc, char **argv)
   // Print out the first half of assembly.
   printf(".intel_syntax noprefix\n");
   printf(".globl main\n");
-  printf("main:\n");
-
-  // Prologue
-  // Reserve areas for 26 variables
-  printf("  push rbp\n");
-  printf("  mov rbp, rsp\n");
-  printf("  sub rsp, 208\n");
 
   // Generate codes from head
   for (int i = 0; code[i]; i++)

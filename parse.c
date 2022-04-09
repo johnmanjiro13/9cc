@@ -106,8 +106,35 @@ static Node *stmt()
   return node;
 }
 
+Node *expect_func_definition()
+{
+  Token *tok = consume_ident();
+  if (!tok)
+    error("function name is missing.");
+
+  expect("(");
+
+  Node *node = calloc(1, sizeof(Node));
+  node->kind = ND_FUNC_DEF;
+  node->func_name = calloc(1, tok->len + 1);
+  strncpy(node->func_name, tok->str, tok->len);
+
+  expect(")");
+  expect("{");
+  return node;
+}
+
+bool is_top_level = true;
+
 static Node *stmt_inner()
 {
+  if (is_top_level)
+  {
+    Node *node = expect_func_definition();
+    is_top_level = false;
+    return node;
+  }
+
   // Parse "if-else" statement
   if (consume("if"))
   {
@@ -163,6 +190,12 @@ static Node *stmt_inner()
     node->stmts = new_vec();
     while (!consume("}"))
       vec_push(node->stmts, stmt());
+    return node;
+  }
+  else if (consume("}"))
+  {
+    Node *node = new_node(ND_FUNC_DEF_END);
+    is_top_level = true;
     return node;
   }
 
