@@ -67,5 +67,6 @@ assert 3 'main() { {1; {2;} return 3;} }'
 assert 55 'main() { i=0; j=0; while(i<=10) {j=i+j; i=i+1;} return j; }'
 
 assert 5 'main() { return plus(2, 3); }'
+assert 6 'main() {  fuga = 1;  return bar(fuga, 2, 3);} bar(a, b, c) {  return a + b + c;}'
 
 echo OK

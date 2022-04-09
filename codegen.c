@@ -118,6 +118,13 @@ void gen(Node *node)
     printf("  push rbp\n");
     printf("  mov rbp, rsp\n");
     printf("  sub rsp, 208\n");
+
+    for (int i = 0; i < node->args->len; i++)
+      gen(node->args->data[i]);
+
+    char *arg[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+    for (int i = node->args->len - 1; i >= 0; i--)
+      printf("  pop %s\n", arg[i]);
     return;
   }
   case ND_FUNC_DEF_END:

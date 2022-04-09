@@ -18,15 +18,6 @@ int main(int argc, char **argv)
   for (int i = 0; code[i]; i++)
   {
     gen(code[i]);
-
-    // 式の評価結果としてスタックに一つの値が残っている
-    // はずなので、スタックが溢れないようにポップしておく
-    printf("  pop rax\n");
   }
-
-  // Epilogue
-  printf("  mov rsp, rbp\n");
-  printf("  pop rbp\n");
-  printf("  ret\n");
   return 0;
 }

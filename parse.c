@@ -106,6 +106,21 @@ static Node *stmt()
   return node;
 }
 
+void *parse_args(Node *node)
+{
+  node->args = new_vec();
+  if (consume(")"))
+    return node;
+
+  vec_push(node->args, expr());
+  while (consume(","))
+    vec_push(node->args, expr());
+  for (int i = 0; i < node->args->len; i++)
+    printf("%d\n", *(int *)node->args->data[i]);
+  expect(")");
+  return node;
+}
+
 Node *expect_func_definition()
 {
   Token *tok = consume_ident();
@@ -119,8 +134,10 @@ Node *expect_func_definition()
   node->func_name = calloc(1, tok->len + 1);
   strncpy(node->func_name, tok->str, tok->len);
 
-  expect(")");
+  parse_args(node);
+
   expect("{");
+
   return node;
 }
 
@@ -322,13 +339,7 @@ static Node *primary()
 
     Node *node = new_node(ND_CALL);
     node->args = new_vec();
-    if (consume(")"))
-      return node;
-
-    vec_push(node->args, assign());
-    while (consume(","))
-      vec_push(node->args, assign());
-    expect(")");
+    parse_args(node);
     node->func_name = tok->str;
     return node;
   }
